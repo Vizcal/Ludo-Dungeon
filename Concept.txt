@@ -1,0 +1,3 @@
+Ludo Dungeon is a virtual board game, played with friends or alone.
+
+As you enter into the dungeon to collect the treasures have been abandonned through ages, you will face traps, monsters and more!
