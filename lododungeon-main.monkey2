@@ -9,7 +9,7 @@ class Room
   Field entrances:string[]
 
   Method RotateRoomClockwise()
-        local temp:int = entrances[0]
+    local temp:int = entrances[0]
     entrances[0] = entrances[1]
     entrances[1] = entrances[2]
     entrances[2] = entrances[3]
@@ -107,7 +107,7 @@ class RoomGenerator
       end
     Next
 
-    Local trap:bool         = Probablity(0.3)
+    Local trap:bool     = Probablity(0.3)
     Local monster:bool  = Probablity(0.3)
     Local treasure:bool = Probablity(0.3)
 
@@ -117,12 +117,11 @@ class RoomGenerator
 
     return room
   End
-
-  Function Probablity:Bool(chance:Float)
-      return Random(0, 100) > chance*100
-  End
 End
 
+Function Probablity:Bool(chance:Float)
+    return Random(0, 100) > chance*100
+End
 
 class Castle
   public
@@ -156,8 +155,8 @@ struct Location
 end
 
 Function CreateCastle:Castle(size:int = 10)
-    Local room1:= RoomGenerator.GenerateStartingRoomWithDoorIn(Direction.SOUTH)
-    Local room2:= RoomGenerator.GenerateRandomRoom()
+  Local room1:= RoomGenerator.GenerateStartingRoomWithDoorIn(Direction.SOUTH)
+  Local room2:= RoomGenerator.GenerateRandomRoom()
 
   Local castle = new Castle()
   castle.map   = new Room[size, size]
@@ -169,62 +168,118 @@ Function CreateCastle:Castle(size:int = 10)
   castle.map[0, 1] = room2
 
   Local player:= EntityGenerator.GeneratePlayer()
+
+
+  '1. Loop every entity - and check it's visibility against all other entities perception
+  '2. So here let us check player against trap and trap against player
+
+'    local perception:int = PerceptionRoll(player)
+'    Local actions:= new Stack<string>
+'    if perception > trap.visibility
+'        actions.Add(TrapIdentifiedActions())
+'    End
+
+  '3. Pick action to perform among possible actions
+  '4. Perform Action for players and monsters based on their priority
+  '5. We now has a list with "events" that just happened
+  '6. Filter this list and show events to player of relevance
+  '7. At this point player is still in same room OR in an entryway to another room
+  '8. If in same room then goto 1. but give +visibility to the things we have already spotted
+  '9. 
+
 End
 
-class Entity
-    field visibility:int = 10
-    field type:string = "no type"
-    field description:string = "no description"
-    field location:Location
-    field actionlist:= new Stack<string>
-end
 
 Function PerceptionChecksGenerateActions:Void()
 
     Local player:= EntityGenerator.GeneratePlayer()
     Local trap:=   EntityGenerator.GenerateTrap()
 
-    '1. Loop every entity - and check it's visibility against all other entities perception
-    '2. So here let us check player against trap and trap against player
+    Local concequence:= DoAction(player, Attempt.Disarm, trap)
 
-    local perception:int = PerceptionRoll(player)
-    Local actions:= new Stack<string>
-    if perception > trap.visibility
-        actions.Add(TrapIdentifiedActions())
-    End
 
-        [add action] Attempt disarm
-        [add action] Attempt avoid
-        [add action] Trigger trap
 
-    Local action:string = "Attempt disarm"
-    DoAction(action)
+
+
 
 End
 
-Function DoAction:Void(actor:Entity, action:string, target:Entity)
-    If action = "Attempt disarm"
-        'DisarmRoll(actor, target)
-    elseif action = "Attempt avoid"
+enum Attempt
+    Disarm = "Disarm",
+    Trigger = "Trigger",
+    Attack = "Attack",
+    Flee = "Flee",
+    Move = "Move",
+    Open = "Open",
+    PickUp = "Pick Up"
+end
 
-    elseif action = "Trigger trap"
+class Entity
+    field type:string = "no type"
+    field description:string = "no description"
+    field location:Location
+    field visibility:int = 10
+    field actionlist:= new Stack<string>
+
+    'Trap specific data
+    field disarmed:bool = false
+    field triggered:bool = false
+    field trigger:bool = false
+end
+
+Function PerceptionRoll:Bool(actor:Entity)
+    return Probablity(1.0)
+End
+Function DisarmRoll:Bool(actor:Entity, trap:Entity)
+    return Probablity(1.0)
+End
+
+Function DisarmTarget:Consequence(trap:Entity)
+    trap.disarmed = true
+    return Consequence.Disarmed
+End
+
+enum Consequence
+    Disarmed = "Disarmed",
+    TrapTriggered = "Trap Triggered",
+    Unknown = "Unknown"
+end
+
+Function TriggerTrap:Void(trap:Entity)
+    If trap.triggered = false
+        trap.trigger = true
+        return Consequence.TrapTriggered
+    End
+End
+
+Function DoAction:Consequence(actor:Entity, attempt:Attempt, target:Entity)
+    If attempt = Attempt.Disarm
+        If DisarmRoll(actor, target)
+            return DisarmTarget(target)
+        Else
+            If TrapTriggeredRoll(actor, target)
+                return TriggerTrap(target)
+            end
+        End
+    elseif action =  Attempt.Trigger
+    elseif action =  Attempt.Attack
+
+    elseif action =  Attempt.Flee
+
+    elseif action =  Attempt.Move
+
+    elseif action =  Attempt.Open
+
+    elseif action =  Attempt.PickUp
 
     End
+    return Consequence.Unknown
 End
 
 Function CheckAvailableActions:Stack<String>(actor:Entity)
     return actor.actionList
 End
 
-enum Attempt
-    Avoid = "Avoid",
-    Trigger = "Trigger",
-    Attack = "Attack",
-    Flee = "Flee",
-    SneakAttack = "Sneak Attack",
-    Sneak = "Sneak",
-    Move = "Move"
-end
 
 /*
 Random room generated with elements (traps, monsters and treasures)
