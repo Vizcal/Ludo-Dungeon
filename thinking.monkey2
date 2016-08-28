@@ -40,8 +40,19 @@ local tags:= Tags.Create(["ogre", "monster", "fights with weapon", "can walk", "
 If tags.has("monster") And tags.not("ghost")
     ' Is monster but no ghost! Has tag monster.
 End
+Local sameTags:= Tags.Union(monsters, traps)
+Local stillToCatchPokemons:= Tags.Difference(myPokemons, allPokemons)
 
-Tags.Union(monsters, traps)
+Class Entity
+    Field items:= new Tags()
+    Field type:= new Tags()
+    Field can:= new Tags()
+End
+
+Local monster:= new Entity()
+monster.type.add(["monster"])
+monster.items.add(["axe", "simple clothes", "silver ring"])
+monster.is.add(["monster"])
 
 ' How can this be made easy to read?
 ' Determine Possible Actions

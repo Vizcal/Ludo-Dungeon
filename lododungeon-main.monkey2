@@ -323,6 +323,17 @@ Class Tags
     Method remove:Void(tag:string)
       tags.Remove(tag)
     End
+    Method add:Void(tags:string[])
+      For local tag:= Eachin tags
+          Self.add(tag)
+      Next
+    End
+    Method remove:Void(tags:string[])
+      For local tag:= Eachin tags
+          Self.remove(tag)
+      Next
+    End
+
     Field tags:= new Stack<string>
 End
 
