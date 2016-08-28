@@ -52,7 +52,7 @@ End
 Local monster:= new Entity()
 monster.type.add(["monster"])
 monster.items.add(["axe", "simple clothes", "silver ring"])
-monster.is.add(["monster"])
+monster.can.add(["walk", "eat", "sleep", "fight", "heal"])
 
 ' How can this be made easy to read?
 ' Determine Possible Actions

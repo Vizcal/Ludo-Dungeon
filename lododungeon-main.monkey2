@@ -318,20 +318,20 @@ Class Tags
     End
 
     Method add:Void(tag:string)
-      tags.Add(tag)
+        tags.Add(tag)
     End
     Method remove:Void(tag:string)
-      tags.Remove(tag)
+        tags.Remove(tag)
     End
     Method add:Void(tags:string[])
-      For local tag:= Eachin tags
-          Self.add(tag)
-      Next
+        For local tag:= Eachin tags
+            Self.add(tag)
+        Next
     End
     Method remove:Void(tags:string[])
-      For local tag:= Eachin tags
-          Self.remove(tag)
-      Next
+        For local tag:= Eachin tags
+            Self.remove(tag)
+        Next
     End
 
     Field tags:= new Stack<string>
