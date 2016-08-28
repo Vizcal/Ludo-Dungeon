@@ -19,6 +19,35 @@ Find products in orders from last 7 days in sweden over amount 5000
 let products = search("products")
 let orders = search("orders").from.last(7).days.in("sweden").with("amount").over("5000")
 
+'Tag system
+Concept "Mithril" is "Material"
+Concept "Ogre Axe" is "Axe", Worth:"120", Weight:"Light", Damage.Amount:"100"
+Concept "Axe" is "Weapon", Damage.Type:"Sharp"
+Concept "Weapon" is "Usable" has "Damage", "Worth", "Weight"
+Concept "Damage" has "Type['Blunt', 'Sharp', Posion]", "Amount[0, 100]"
+
+Behavior "Walk" is "Moveable"
+
+Concept Ogre {
+  is = ogre | monster | fearful
+  has = "Ogre Axe"
+  can = walk
+}
+
+if thing.is(monster) And thing.has(weapon)
+
+local tags:= Tags.Create(["ogre", "monster", "fights with weapon", "can walk", "can be disarmed", "fearful"])
+If tags.has("monster") And tags.not("ghost")
+    ' Is monster but no ghost! Has tag monster.
+End
+
+Tags.Union(monsters, traps)
+
+' How can this be made easy to read?
+' Determine Possible Actions
+' actors.Each( Lambda(actor)
+' actor.actions = Union actor.InSight, possibilities if matching field type add actions to actor.actions
+' End )
 
 // Spatial checks:
 // can be used with point, circle, polygon (which then checks all points)
